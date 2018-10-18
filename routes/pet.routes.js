@@ -2,6 +2,9 @@ let r = require('request').defaults({
     json: true
 });
 let async = require('async');
+let redis = require('redis');
+
+let redisClient = redis.createClient(6379, '127.0.0.1');
 
 module.exports = (app) => {
     
@@ -46,6 +49,41 @@ module.exports = (app) => {
             });
         })
     
+    });
+
+    app.get('/pets/dogs', (req, res) => {
+        const key = 'dogs';
+        redisClient.get(key, (err, dogs) => {
+            if (err) 
+                throw err;
+            if (dogs)
+                res.json(JSON.parse(dogs));
+            else {
+                r({ uri: 'http://localhost:4001/dog'},
+                (err, response, body) => {
+                    
+                    if (err) 
+                        throw err;
+                    if (!err && response.statusCode == 200) {
+                        res.json(body);
+                        redisClient.set(key, JSON.stringify(body), (err) => {
+                            if (err) 
+                                throw err;
+                        });
+                    } else {
+                        res.send(response.statusCode);
+                    }
+                })
+            }
+
+        });
+
+
+    });
+
+    app.post('/pets/clear', (req, res) => {
+        redisClient.FLUSHALL();
+        res.send('done');
     });
     
 };
