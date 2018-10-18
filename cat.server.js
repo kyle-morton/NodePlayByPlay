@@ -10,6 +10,6 @@ app.use(bodyParser.urlencoded({
 //requiring cat export, passing in express app
 require('./routes/cat.routes')(app);
 
-let server = app.listen(3000, () => {
-    console.log('cat server running on port: ' + 3000);
+let server = app.listen(4000, () => {
+    console.log('cat server running on port: ' + 4000);
 })
