@@ -3,4 +3,4 @@
 _Notes_
 ------
 
-- running operations on data will cause Node.js to block (since it's no asynchronous) so be careful when marshalling json.
+- running operations like loops on data  will cause Node.js to block (since the action isn't asynchronous) so be careful when working w/ json.
