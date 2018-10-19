@@ -66,7 +66,11 @@ module.exports = (app) => {
                         throw err;
                     if (!err && response.statusCode == 200) {
                         res.json(body);
-                        redisClient.set(key, JSON.stringify(body), (err) => {
+
+                        //cache request for 10 seconds in redis client
+
+                        // redisClient.set(key, JSON.stringify(body), (err) => {
+                        redisClient.setex(key, 10, JSON.stringify(body), (err) => {
                             if (err) 
                                 throw err;
                         });
